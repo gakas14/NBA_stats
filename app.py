@@ -48,11 +48,11 @@ p_id, player_name = get_basic_stats()
 #df_shoot = p_d.get_data_frames()
 #df_shoot.to_csv('df_shoot.csv')
 
-bar_chart(p_id, player_name)
+#bar_chart(p_id, player_name)
 #pie_chart(p_id, player_name)
 
 #if st.button('Get more Stats'):
-get_more_stats(p_id, player_name)
+#get_more_stats(p_id, player_name)
 
 
 #if __name__ == '__name__':

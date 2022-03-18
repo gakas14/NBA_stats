@@ -2,7 +2,7 @@ import streamlit as st
 from data_cleaning import *
 import plotly.graph_objects as go
 from nba_api.stats.endpoints import commonplayerinfo, playergamelog, playercareerstats, playerdashboardbygamesplits, playerprofilev2, playerdashptshots, playerdashboardbyshootingsplits, playerdashboardbygeneralsplits, playerdashboardbygamesplits
-
+from more_stats import get_more_stats
 import plotly.express as px
 # Import subprocess
 from subprocess import call
@@ -20,12 +20,12 @@ def get_basic_stats():
     # Button
     p_id = 0
     #if st.button('Get Data'):
-    if player_name:
+    if player_name!= " ":
         # Run the code to get the player id and if player is still active or not.
         st.write(player_name.upper(), "'s profile.")
         #call(['python', 'app.py', player_name])
         p_id, active = get_player_id(player_list, player_name)
-
+        #st.write(p_id,active)
         #call(['python', 'app.py', player_name])
         #st.write(p_id)
         #st.write( active)
@@ -72,9 +72,20 @@ def get_basic_stats():
             st.dataframe(shooting_avg.style.format(
                 subset=['Player_ID', 'FGM', 'FGA', 'FG3M', 'FG3A', 'FTM', 'FTA'], formatter="{:.2f}"))
             pie_chart(p_id, player_name)
+            bar_chart(p_id, player_name)
+
+            get_more_stats(p_id, player_name)
+
             #st.write(shooting_avg)
         else:
-            st.write("Player Not active or not find.")
+            if p_id != 0:
+                st.write("Player Not active.")
+                get_more_stats(p_id, player_name)
+            else:
+                st.write("Player not find. check the name again plaese.")
+
+
+            #get_more_stats(p_id, player_name)
 
     #st.write(player_name)
     return p_id, player_name
