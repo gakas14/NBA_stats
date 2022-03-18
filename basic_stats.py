@@ -1,18 +1,21 @@
 import streamlit as st
 from data_cleaning import *
 import plotly.graph_objects as go
+from nba_api.stats.endpoints import commonplayerinfo, playergamelog, playercareerstats, playerdashboardbygamesplits, playerprofilev2, playerdashptshots, playerdashboardbyshootingsplits, playerdashboardbygeneralsplits, playerdashboardbygamesplits
+
 import plotly.express as px
 # Import subprocess
 from subprocess import call
 
-#@st.cache(suppress_st_warning=True)
+
 def get_basic_stats():
     #player_name = ""
     # Get the payer your looking for
     player_name = st.text_input("Search for a particular player here <Player full name>", value=" ")
     #st.write(player_name)
 
-
+    player_list = pd.read_csv('player_list.csv')
+    #st.dataframe(player_list)
     # Get the player currstreamlitent season stats.
     # Button
     p_id = 0
@@ -21,11 +24,40 @@ def get_basic_stats():
         # Run the code to get the player id and if player is still active or not.
         st.write(player_name.upper(), "'s profile.")
         #call(['python', 'app.py', player_name])
-        p_id, active = get_palyer_id(player_name)
+        p_id, active = get_player_id(player_list, player_name)
+
         #call(['python', 'app.py', player_name])
         #st.write(p_id)
         #st.write( active)
         if active:
+
+            player_info = commonplayerinfo.CommonPlayerInfo(player_id=p_id)
+            df_player_info = player_info.get_data_frames()
+            df_player_info[1].to_csv('df_player_info.csv', index=False)
+
+            a_player_gamelog = playergamelog.PlayerGameLog(player_id=p_id)
+            df_player_gamelog = a_player_gamelog.get_data_frames()
+            player_gamelog = df_player_gamelog[0]
+            player_gamelog.to_csv('player_gamelog.csv', index=False)
+
+            p = playerprofilev2.PlayerProfileV2(player_id=p_id)
+            df_p = p.get_data_frames()
+
+
+            df_p[0].to_csv('regular_s.csv', index=False)
+            df_p[1].to_csv('total_reg_s.csv', index=False)
+            df_p[2].to_csv('playoff.csv', index=False)
+            df_p[3].to_csv('total_playoff.csv', index=False)
+            df_p[4].to_csv('all_star.csv', index=False)
+            df_p[5].to_csv('total_all_star.csv', index=False)
+
+
+            p_d = playerdashboardbyshootingsplits.PlayerDashboardByShootingSplits(player_id=p_id)
+            df_shoot = p_d.get_data_frames()
+            df_shoot[3].to_csv('df_shoot.csv', index=False)
+
+
+
             # if the player is still active then get his current season stats
             player_stats, shooting_avg = get_current_season(p_id)
 
@@ -44,20 +76,18 @@ def get_basic_stats():
         else:
             st.write("Player Not active or not find.")
 
-
-
-
-
-
+    #st.write(player_name)
     return p_id, player_name
 
 
 # Get a pie chart of a player points.
 def pie_chart(p_id, player_name):
-        p_d = playerdashboardbyshootingsplits.PlayerDashboardByShootingSplits(player_id=p_id)
-        df_p = p_d.get_data_frames()
+        #p_d = playerdashboardbyshootingsplits.PlayerDashboardByShootingSplits(player_id=p_id)
+        #df_p = p_d.get_data_frames()
 
-        shot_area = df_p[3][['GROUP_VALUE', 'FGM', 'FGA', 'FG_PCT']]
+        df_p = pd.read_csv('df_shoot.csv')
+
+        shot_area = df_p[['GROUP_VALUE', 'FGM', 'FGA', 'FG_PCT']]
         shot_area = pd.DataFrame(shot_area)
 
         # left_col, right_col = st.columns(2)
@@ -83,12 +113,16 @@ def pie_chart(p_id, player_name):
 
 # Get plot chart with a player avg stats(pts, ast, reb)
 def bar_chart(p_id, player_name):
-        p = playerprofilev2.PlayerProfileV2(player_id=p_id)
-        df_p = p.get_data_frames()
+        #p = playerprofilev2.PlayerProfileV2(player_id=p_id)
+        #df_p = p.get_data_frames()
+
+        df_p = pd.read_csv('df_p.csv')
+
         # df_r_s = get_career_stats(p_id)
         # st.write(df_r_s[0])
 
-        avg_s = df_p[0].copy()
+
+        avg_s = df_p.copy()
         # st.write(avg_s)
         avg_s = avg_s.drop(['PLAYER_ID', 'LEAGUE_ID', 'TEAM_ID'], axis=1)
         avg_s = pd.DataFrame(avg_s)

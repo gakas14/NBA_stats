@@ -27,6 +27,7 @@ def get_more_stats(p_id, player_name):
         # format the percentage columns
         reg_tot = formatage_pct(reg_tot)
         # reset the index columns
+        #reg_tot = reg_tot.drop('Unnamed:0', axis=1)
         reg_tot = reg_tot.reset_index(drop=True)
         # replace na/nan by '-'
         reg_tot = reg_tot.replace(pd.NA, '-')
