@@ -22,8 +22,9 @@ def get_basic_stats():
     #if st.button('Get Data'):
     if player_name != "":
         # Run the code to get the player id and if player is still active or not.
-        st.write(player_name.upper(), "'s profile.")
-        #call(['python', 'app.py', player_name])
+        st.markdown(f"<div> <h1 style='display:inline-block'> {player_name.upper()}'s profile </h1> </div>", unsafe_allow_html=True)
+        #st.write(player_name.upper(), "'s profile.")
+
         p_id, active = get_player_id(player_list, player_name)
         #st.write(p_id,active)
         #call(['python', 'app.py', player_name])
@@ -67,11 +68,11 @@ def get_basic_stats():
                 player_stats = formatage_pct(player_stats)
                 shooting_avg = formatage_pct(shooting_avg)
 
-                st.write(player_name, "'s current season stats")
+                st.write(player_name.title(), "'s current season stats")
                 #st.write(player_stats.style.format("{:.}"))
                 st.dataframe(player_stats.style.format(subset=['Player_ID', 'OREB', 'DREB', 'REB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'PLUS_MINUS'], formatter="{:.2f}"))
                 #st.write(player_stats)
-                st.write(player_name, "'s Shooting stats")
+                st.write(player_name.title(), "'s Shooting stats")
                 st.dataframe(shooting_avg.style.format(
                 subset=['Player_ID', 'FGM', 'FGA', 'FG3M', 'FG3A', 'FTM', 'FTA'], formatter="{:.2f}"))
 
@@ -83,7 +84,8 @@ def get_basic_stats():
                 #more_stats_df(p_id)
                 #st.write(shooting_avg)
             else:
-                st.write(f"Player Not active. {player_name}'s career stats are:")
+                st.markdown(f"<div> <h5 style='display:inline-block'> Player Not active. {player_name.title()}'s career stats are: </h5> </div>", unsafe_allow_html=True)
+                #st.write(f"Player Not active. {player_name}'s career stats are:")
                 #get_more_stats(p_id, player_name)
 
             get_more_stats(p_id, player_name)
@@ -111,7 +113,7 @@ def pie_chart(p_id, player_name):
             go.Pie(labels=shot_area['GROUP_VALUE'], values=shot_area['FGM'], textinfo='label+percent',
                    insidetextorientation='radial')])
 
-        fig2.update_layout(title_text=f"{player_name}'s Current season Shots made repartition.")
+        fig2.update_layout(title_text=f"{player_name.title()}'s Current season Shots made repartition.")
         # left_col.plotly_chart(fig2, use_container_width=True)
         st.plotly_chart(fig2, use_container_width=True)
 
@@ -119,7 +121,7 @@ def pie_chart(p_id, player_name):
             go.Pie(labels=shot_area['GROUP_VALUE'], values=shot_area['FGA'], textinfo='label+percent',
                    insidetextorientation='radial')])
 
-        fig3.update_layout(title_text=f"{player_name}'s Current season Shots attempted repartition.")
+        fig3.update_layout(title_text=f"{player_name.title()}'s Current season Shots attempted repartition.")
         fig3.update_traces(hoverinfo='label+percent', textinfo='percent', textfont_size=15,
                            marker=dict(colors=shot_area['GROUP_VALUE']))
         st.plotly_chart(fig3, use_container_width=True)
@@ -183,7 +185,7 @@ def bar_chart(p_id, player_name):
             go.Bar(name='AST', x=df_chart['SEASON'], y=df_chart['AST'])])
         # Change the bar mode
         fig.update_layout(barmode='group', height=500)
-        fig.update_layout(title_text=f"{player_name}'s CAREER PTS, AST AND REB by years.")
+        fig.update_layout(title_text=f"{player_name.title()}'s CAREER PTS, AST AND REB by years.")
         st.plotly_chart(fig, use_container_width=True)
 
 
