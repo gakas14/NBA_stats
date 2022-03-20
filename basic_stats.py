@@ -84,7 +84,7 @@ def get_basic_stats():
     #st.write(player_name)
     return p_id, player_name
 
-@st.cache
+
 def more_stats_df(p_id):
     # get more stats. Regular season , Playoff and Allstat.
     p = playerprofilev2.PlayerProfileV2(player_id=p_id)
