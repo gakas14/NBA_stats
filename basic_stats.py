@@ -31,27 +31,18 @@ def get_basic_stats():
         #st.write( active)
         if active:
 
+            # get player personal infor
             player_info = commonplayerinfo.CommonPlayerInfo(player_id=p_id)
             df_player_info = player_info.get_data_frames()
             df_player_info[1].to_csv('df_player_info.csv', index=False)
 
+            # get player current season stats
             a_player_gamelog = playergamelog.PlayerGameLog(player_id=p_id)
             df_player_gamelog = a_player_gamelog.get_data_frames()
             player_gamelog = df_player_gamelog[0]
             player_gamelog.to_csv('player_gamelog.csv', index=False)
 
-            p = playerprofilev2.PlayerProfileV2(player_id=p_id)
-            df_p = p.get_data_frames()
-
-
-            df_p[0].to_csv('regular_s.csv', index=False)
-            df_p[1].to_csv('total_reg_s.csv', index=False)
-            df_p[2].to_csv('playoff.csv', index=False)
-            df_p[3].to_csv('total_playoff.csv', index=False)
-            df_p[4].to_csv('all_star.csv', index=False)
-            df_p[5].to_csv('total_all_star.csv', index=False)
-
-
+            # get player shooting stats
             p_d = playerdashboardbyshootingsplits.PlayerDashboardByShootingSplits(player_id=p_id)
             df_shoot = p_d.get_data_frames()
             df_shoot[3].to_csv('df_shoot.csv', index=False)
@@ -77,12 +68,13 @@ def get_basic_stats():
             bar_chart(p_id, player_name)
 
             get_more_stats(p_id, player_name)
-
+            more_stats_df(p_id)
             #st.write(shooting_avg)
         else:
             if p_id != 0:
                 st.write("Player Not active.")
                 get_more_stats(p_id, player_name)
+                more_stats_df(p_id)
             else:
                 st.write("Player not find. check the name again plaese.")
 
@@ -92,6 +84,18 @@ def get_basic_stats():
     #st.write(player_name)
     return p_id, player_name
 
+@st.cache
+def more_stats_df(p_id):
+    # get more stats. Regular season , Playoff and Allstat.
+    p = playerprofilev2.PlayerProfileV2(player_id=p_id)
+    df_p = p.get_data_frames()
+
+    df_p[0].to_csv('regular_s.csv', index=False)
+    df_p[1].to_csv('total_reg_s.csv', index=False)
+    df_p[2].to_csv('playoff.csv', index=False)
+    df_p[3].to_csv('total_playoff.csv', index=False)
+    df_p[4].to_csv('all_star.csv', index=False)
+    df_p[5].to_csv('total_all_star.csv', index=False)
 
 # Get a pie chart of a player points.
 def pie_chart(p_id, player_name):
