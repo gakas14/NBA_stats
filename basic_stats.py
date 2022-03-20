@@ -29,73 +29,71 @@ def get_basic_stats():
         #call(['python', 'app.py', player_name])
         #st.write(p_id)
         #st.write( active)
-        if active:
+        if p_id != 0:
 
-            # get player personal infor
-            player_info = commonplayerinfo.CommonPlayerInfo(player_id=p_id)
-            df_player_info = player_info.get_data_frames()
-            df_player_info[1].to_csv('df_player_info.csv', index=False)
+            # get more stats. Regular season , Playoff and Allstat.
+            p = playerprofilev2.PlayerProfileV2(player_id=p_id)
+            df_p = p.get_data_frames()
 
-            # get player current season stats
-            a_player_gamelog = playergamelog.PlayerGameLog(player_id=p_id)
-            df_player_gamelog = a_player_gamelog.get_data_frames()
-            player_gamelog = df_player_gamelog[0]
-            player_gamelog.to_csv('player_gamelog.csv', index=False)
+            df_p[0].to_csv('regular_s.csv', index=False)
+            df_p[1].to_csv('total_reg_s.csv', index=False)
+            df_p[2].to_csv('playoff.csv', index=False)
+            df_p[3].to_csv('total_playoff.csv', index=False)
+            df_p[4].to_csv('all_star.csv', index=False)
+            df_p[5].to_csv('total_all_star.csv', index=False)
 
-            # get player shooting stats
-            p_d = playerdashboardbyshootingsplits.PlayerDashboardByShootingSplits(player_id=p_id)
-            df_shoot = p_d.get_data_frames()
-            df_shoot[3].to_csv('df_shoot.csv', index=False)
+            if active:
+                # get player personal info
+                player_info = commonplayerinfo.CommonPlayerInfo(player_id=p_id)
+                df_player_info = player_info.get_data_frames()
+                df_player_info[1].to_csv('df_player_info.csv', index=False)
+
+                # get player current season stats
+                a_player_gamelog = playergamelog.PlayerGameLog(player_id=p_id)
+                df_player_gamelog = a_player_gamelog.get_data_frames()
+                player_gamelog = df_player_gamelog[0]
+                player_gamelog.to_csv('player_gamelog.csv', index=False)
+
+                # get player shooting stats
+                p_d = playerdashboardbyshootingsplits.PlayerDashboardByShootingSplits(player_id=p_id)
+                df_shoot = p_d.get_data_frames()
+                df_shoot[3].to_csv('df_shoot.csv', index=False)
 
 
 
-            # if the player is still active then get his current season stats
-            player_stats, shooting_avg = get_current_season(p_id)
+                # if the player is still active then get his current season stats
+                player_stats, shooting_avg = get_current_season(p_id)
 
-            player_stats = formatage_pct(player_stats)
-            shooting_avg = formatage_pct(shooting_avg)
+                player_stats = formatage_pct(player_stats)
+                shooting_avg = formatage_pct(shooting_avg)
 
-            st.write(player_name, "'s current season stats")
-            #st.write(player_stats.style.format("{:.}"))
-            st.dataframe(player_stats.style.format(subset=['Player_ID', 'OREB', 'DREB', 'REB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'PLUS_MINUS'], formatter="{:.2f}"))
-            #st.write(player_stats)
-            st.write(player_name, "'s Shooting stats")
-            st.dataframe(shooting_avg.style.format(
+                st.write(player_name, "'s current season stats")
+                #st.write(player_stats.style.format("{:.}"))
+                st.dataframe(player_stats.style.format(subset=['Player_ID', 'OREB', 'DREB', 'REB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', 'PLUS_MINUS'], formatter="{:.2f}"))
+                #st.write(player_stats)
+                st.write(player_name, "'s Shooting stats")
+                st.dataframe(shooting_avg.style.format(
                 subset=['Player_ID', 'FGM', 'FGA', 'FG3M', 'FG3A', 'FTM', 'FTA'], formatter="{:.2f}"))
 
-            # call the pie and bar charts
-            pie_chart(p_id, player_name)
-            bar_chart(p_id, player_name)
+                # call the pie and bar charts
+                pie_chart(p_id, player_name)
+                bar_chart(p_id, player_name)
+
+                #get_more_stats(p_id, player_name)
+                #more_stats_df(p_id)
+                #st.write(shooting_avg)
+            else:
+                st.write(f"Player Not active. {player_name}'s career stats are:")
+                #get_more_stats(p_id, player_name)
 
             get_more_stats(p_id, player_name)
-            more_stats_df(p_id)
-            #st.write(shooting_avg)
+
         else:
-            if p_id != 0:
-                st.write("Player Not active.")
-                get_more_stats(p_id, player_name)
-                more_stats_df(p_id)
-            else:
-                st.write("Player not find. check the name again plaese.")
-
-
-            #get_more_stats(p_id, player_name)
+            st.write("Player not find. Please check the name again.")
 
     #st.write(player_name)
     return p_id, player_name
 
-
-def more_stats_df(p_id):
-    # get more stats. Regular season , Playoff and Allstat.
-    p = playerprofilev2.PlayerProfileV2(player_id=p_id)
-    df_p = p.get_data_frames()
-
-    df_p[0].to_csv('regular_s.csv', index=False)
-    df_p[1].to_csv('total_reg_s.csv', index=False)
-    df_p[2].to_csv('playoff.csv', index=False)
-    df_p[3].to_csv('total_playoff.csv', index=False)
-    df_p[4].to_csv('all_star.csv', index=False)
-    df_p[5].to_csv('total_all_star.csv', index=False)
 
 # Get a pie chart of a player points.
 def pie_chart(p_id, player_name):
