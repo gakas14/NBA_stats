@@ -9,9 +9,9 @@ from subprocess import call
 
 
 def get_basic_stats():
-    #player_name = ""
+    #player_name = 'alpha'
     # Get the payer your looking for
-    player_name = st.text_input("Search for a particular player here <Player full name>", value=" ")
+    player_name = st.text_input("Search for a particular player here <Player full name>", value="")
     #st.write(player_name)
 
     player_list = pd.read_csv('player_list.csv')
@@ -20,7 +20,7 @@ def get_basic_stats():
     # Button
     p_id = 0
     #if st.button('Get Data'):
-    if player_name!= " ":
+    if player_name != "":
         # Run the code to get the player id and if player is still active or not.
         st.write(player_name.upper(), "'s profile.")
         #call(['python', 'app.py', player_name])

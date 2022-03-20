@@ -21,8 +21,6 @@ st.sidebar.markdown("You GET <ol><li>You can search a particular player.</li> <l
                     "</ol>", unsafe_allow_html=True)
 
 
-
-
 player_list = players.get_players()
 player_list = pd.DataFrame(player_list)
 player_list.to_csv('player_list.csv', index=False)
