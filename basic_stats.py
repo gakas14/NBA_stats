@@ -71,6 +71,8 @@ def get_basic_stats():
             st.write(player_name, "'s Shooting stats")
             st.dataframe(shooting_avg.style.format(
                 subset=['Player_ID', 'FGM', 'FGA', 'FG3M', 'FG3A', 'FTM', 'FTA'], formatter="{:.2f}"))
+
+            # call the pie and bar charts
             pie_chart(p_id, player_name)
             bar_chart(p_id, player_name)
 
@@ -127,7 +129,7 @@ def bar_chart(p_id, player_name):
         #p = playerprofilev2.PlayerProfileV2(player_id=p_id)
         #df_p = p.get_data_frames()
 
-        df_p = pd.read_csv('df_p.csv')
+        df_p = pd.read_csv('regular_s.csv')
 
         # df_r_s = get_career_stats(p_id)
         # st.write(df_r_s[0])
